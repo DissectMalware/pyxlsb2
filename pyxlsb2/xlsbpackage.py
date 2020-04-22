@@ -2,10 +2,12 @@ import os
 import shutil
 from tempfile import TemporaryFile
 from zipfile import ZipFile
-
+from glob import fnmatch
+from xml.etree import ElementTree
 
 class ZipPackage(object):
     def __init__(self, name):
+        self._zf_path = name
         self._zf = ZipFile(name, 'r')
 
     def __enter__(self):
@@ -25,13 +27,37 @@ class ZipPackage(object):
             tf.close()
             return None
 
+    def get_files(self, file_name_filters=None):
+        result = {}
+        if not file_name_filters:
+            file_name_filters = ['*']
+
+        for i in self._zf.namelist():
+            for filter in file_name_filters:
+                if fnmatch.fnmatch(i, filter):
+                    result[i] = self._zf.read(i)
+
+        return result
+
+    def get_xml_file(self, file_name):
+        result = None
+        files = self.get_files([file_name])
+        if len(files) == 1:
+            workbook_content = files[file_name].decode('utf_8')
+            result = ElementTree.fromstring(workbook_content)
+        return result
+
     def close(self):
         self._zf.close()
 
 
 class XlsbPackage(ZipPackage):
+
     def get_workbook_part(self):
         return self.get_file('xl/workbook.bin')
+
+    def get_workbook_rels(self):
+        return self.get_xml_file('xl/_rels/workbook.bin.rels')
 
     def get_sharedstrings_part(self):
         return self.get_file('xl/sharedStrings.bin')

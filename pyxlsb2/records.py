@@ -66,6 +66,8 @@ class SheetRecord(BaseRecord):
         self.sheetId = sheetId
         self.rId = rId
         self.name = name
+        self.type = None
+        self.loc = None
 
     @classmethod
     def read(cls, reader, rectype, reclen):
