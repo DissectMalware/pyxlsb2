@@ -1,0 +1,14 @@
+*.egg-info/
+*.pyc
+*.pyd
+*.pyo
+*.sublime-*
+*.swp
+__pycache__/
+build/
+dist/
+docs/_build/
+venv/
+venv2/
+venv3/
+~*
