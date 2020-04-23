@@ -1,12 +1,13 @@
-pyxlsb
+pyxlsb2
 ======
 
 ``pyxlsb2`` (a variant of pyxlsb) is an Excel 2007-2010 Binary Workbook (xlsb) parser for Python.
 
-pyxslb2 offers the following improvements/changes in comparison to pyxlsb:
+``pyxslb2`` offers the following improvements/changes in comparison to pyxlsb:
 
 1. keeping all data in memory instead of creating temporary files to speedup the parsing
 2. allowing to read not only worksheets but also other boundsheets such as macrosheets.
+3. allowing to extract formulas (accurately shows the formulas, supports A1 addressing, and supports external addressing)
 
 
 Usage
@@ -20,7 +21,7 @@ returned.
 
 .. code:: python
 
-   from pyxlsb import open_workbook
+   from pyxlsb2 import open_workbook
    with open_workbook('Book1.xlsb') as wb:
        # Do stuff with wb
 
@@ -36,9 +37,6 @@ The Workbook object exposes a ``get_sheet_by_index(idx)`` and
    # Using the sheet name
    with wb.get_sheet_by_name('Sheet1') as sheet:
        # Do stuff with sheet
-
-*NOTE*: The 1-based ``get_sheet(idx_or_name)`` method still works, but is
-deprecated.
 
 A ``sheets`` property containing the sheet names is available on the Workbook
 instance.
@@ -66,8 +64,6 @@ method from the corresponding Workbook instance to turn them into ``datetime``.
    print(wb.convert_date(41235.45578))
    # datetime.datetime(2012, 11, 22, 10, 56, 19)
 
-*NOTE*: Using the ``convert_date`` in the ``pyxlsb`` module still works, but is
-deprecated and will be removed.
 
 Example
 -------
@@ -92,22 +88,10 @@ Limitations
 
 Non exhaustive list of things that are currently not supported:
 
--  Formulas
-
-   -  Parsing *WIP*
-   -  Evaluation
-
 -  Style and formatting *WIP*
 -  Rich text cells (formatting is lost, but getting the text works)
 -  Encrypted (password protected) workbooks
 -  Comments and other annotations
 -  Writing (*very* far goal)
 
-Feel free to open issues or, even better, submit PRs for these things and
-anything else I might have missed, I'll try to prioritize what's most requested.
 
-.. |PyPI| image:: https://img.shields.io/pypi/v/pyxlsb.svg
-   :target: https://pypi.python.org/pypi/pyxlsb
-.. |Build Status| image:: https://travis-ci.org/wwwiiilll/pyxlsb.svg?branch=master
-   :target: https://travis-ci.org/wwwiiilll/pyxlsb
-.. _API reference: https://wwwiiilll.github.io/pyxlsb/
