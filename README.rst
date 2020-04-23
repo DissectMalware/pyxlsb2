@@ -83,7 +83,7 @@ Converting a workbook to CSV:
                    for row in sheet.rows():
                        writer.writerow([c.v for c in row])
 
-Limitations
+Limitations 
 -----------
 
 Non exhaustive list of things that are currently not supported:
@@ -92,6 +92,6 @@ Non exhaustive list of things that are currently not supported:
 -  Rich text cells (formatting is lost, but getting the text works)
 -  Encrypted (password protected) workbooks
 -  Comments and other annotations
--  Writing (*very* far goal)
+-  Writing (out of scope)
 
 
