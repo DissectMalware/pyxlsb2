@@ -4,6 +4,7 @@ from tempfile import TemporaryFile
 from zipfile import ZipFile
 from glob import fnmatch
 from xml.etree import ElementTree
+from io import BytesIO
 
 class ZipPackage(object):
     def __init__(self, name):
@@ -16,16 +17,23 @@ class ZipPackage(object):
     def __exit__(self, type, value, traceback):
         self.close()
 
-    def get_file(self, name):
-        tf = TemporaryFile()
+    def get_file(self, name, in_mem=True):
         try:
-            with self._zf.open(name, 'r') as zf:
-                shutil.copyfileobj(zf, tf)
-            tf.seek(0, os.SEEK_SET)
+            if in_mem:
+                content = self._zf.read(name)
+                tf = BytesIO(content)
+            else:
+                tf = TemporaryFile()
+                with self._zf.open(name, 'r') as zf:
+                    shutil.copyfileobj(zf, tf)
+                tf.seek(0, os.SEEK_SET)
             return tf
         except KeyError:
-            tf.close()
+            if not in_mem:
+                tf.close()
             return None
+
+
 
     def get_files(self, file_name_filters=None):
         result = {}
