@@ -1,4 +1,3 @@
 enum34; python_version < "3.4"
 mock
-pylint
 sphinx; python_version >= "3.5"
