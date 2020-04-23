@@ -15,8 +15,13 @@ with open_workbook(sys.argv[1]) as wb:
         with wb.get_sheet_by_name(s.name) as sheet:
             for row in sheet:
                 for cell in row:
-                    f = Formula.parse(cell.formula)
-                    if f._tokens:
-                        print(f.stringify(wb))
+                    formula_str = Formula.parse(cell.formula)
+                    if formula_str._tokens:
+                        try:
+                            print(formula_str.stringify(wb))
+                        except NotImplementedError as exp:
+                            print('ERROR({}) {}'.format(exp, str(cell)))
+                        except Exception:
+                            print('ERROR ' + str(cell))
         d = time.time() - a
         print('Done! ({} seconds)'.format(d))
