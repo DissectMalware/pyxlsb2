@@ -25,6 +25,9 @@ class BasePtg(object):
         pass
 
 
+
+
+
 class ClassifiedPtg(BasePtg):
     def __init__(self, ptg, *args, **kwargs):
         super(ClassifiedPtg, self).__init__(*args, **kwargs)
@@ -49,6 +52,24 @@ class ClassifiedPtg(BasePtg):
     @classmethod
     def read(cls, reader, ptg):
         return cls(ptg)
+
+    @staticmethod
+    def cell_address(col, row, col_rel, row_rel):
+        # A1 addressing
+        col_name = ClassifiedPtg.convert_to_column_name(col+1)
+        col_name = '$'+col_name if col_rel else col_name
+        row_name = str(row+1)
+        row_name = '$'+row_name if row_rel else row_name
+
+        return col_name+row_name
+
+    @staticmethod
+    def convert_to_column_name(n):
+        string = ""
+        while n > 0:
+            n, remainder = divmod(n - 1, 26)
+            string = chr(65 + remainder) + string
+        return string
 
 
 class UnknownPtg(BasePtg):
@@ -390,35 +411,16 @@ class RefPtg(ClassifiedPtg):
         self.col_rel = col_rel
 
 
-    @staticmethod
-    def convert_to_column_name(n):
-        string = ""
-        while n > 0:
-            n, remainder = divmod(n - 1, 26)
-            string = chr(65 + remainder) + string
-        return string
-
     def stringify(self, tokens, workbook):
-        cell_add = None
-
-        if self.row_rel and self.col_rel:
-            cell_add = 'R[{}]C[{}]'.format(self.row + 1,self.col + 1)
-        elif self.row_rel:
-            cell_add = 'R[{}]C'.format(self.row)
-        elif self.col_rel:
-            cell_add = 'RC[{}]'.format(self.col)
-        else:
-            cell_add = self.convert_to_column_name(self.col+1) + str(self.row+1)
-
-        return cell_add
+        return self.cell_address(self.col, self.row, self.col_rel, self.row_rel)
 
     @classmethod
     def read(cls, reader, ptg):
         row = reader.read_int()
         col = reader.read_short()
-        row_rel = col & 0x8000 != 0x8000
-        col_rel = col & 0x4000 != 0x4000
-        return cls(row, col & 0x3FFF, row_rel, col_rel, ptg)
+        row_rel = col & 0x8000 == 0x8000
+        col_rel = col & 0x4000 == 0x4000
+        return cls(row, col & 0x3FFF, not row_rel, not col_rel, ptg)
 
 
 class AreaPtg(ClassifiedPtg):
@@ -437,11 +439,11 @@ class AreaPtg(ClassifiedPtg):
         self.last_col_rel = last_col_rel
 
     def stringify(self, tokens, workbook):
-        r1 = ('R[{}]' if self.first_row_rel else 'R{}').format(self.first_row + 1)
-        c1 = ('C[{}]' if self.first_col_rel else 'C{}').format(self.first_col + 1)
-        r2 = ('R[{}]' if self.last_row_rel else 'R{}').format(self.last_row + 1)
-        c2 = ('C[{}]' if self.last_col_rel else 'C{}').format(self.last_col + 1)
-        return r1 + c1 + ':' + r2 + c2
+        first = self.cell_address(self.first_col, self.first_row, self.first_col_rel
+                                  ,self.first_row_rel)
+        last = self.cell_address(self.last_col, self.last_row, self.last_col_rel
+                                  ,self.last_row_rel)
+        return first + ':' + last
 
     @classmethod
     def read(cls, reader, ptg):
@@ -453,7 +455,7 @@ class AreaPtg(ClassifiedPtg):
         r2rel = c2 & 0x8000 == 0x8000
         c1rel = c1 & 0x4000 == 0x4000
         c2rel = c2 & 0x4000 == 0x4000
-        return cls(r1, c1 & 0x3FFF, r2, c2 & 0x3FFF, r1rel, r2rel, c1rel, c2rel, ptg)
+        return cls(r1, r2, c1 & 0x3FFF, c2 & 0x3FFF, not r1rel, not r2rel, not c1rel, not c2rel, ptg)
 
 
 class MemAreaPtg(ClassifiedPtg):
@@ -542,9 +544,7 @@ class RefNPtg(ClassifiedPtg):
         self.col_rel = col_rel
 
     def stringify(self, tokens, workbook):
-        r = ('R[{}]' if self.row_rel else 'R{}').format(self.row + 1)
-        c = ('C[{}]' if self.col_rel else 'C{}').format(self.col + 1)
-        return r + c
+        return self.cell_address(self.col, self.row, self.col_rel, self.row_rel)
 
     @classmethod
     def read(cls, reader, ptg):
@@ -552,7 +552,7 @@ class RefNPtg(ClassifiedPtg):
         col = reader.read_short()
         row_rel = col & 0x8000 == 0x8000
         col_rel = col & 0x4000 == 0x4000
-        return cls(row, col & 0x3FFF, row_rel, col_rel, ptg)
+        return cls(row, col & 0x3FFF, not row_rel, not col_rel, ptg)
 
 
 class AreaNPtg(ClassifiedPtg):
@@ -571,11 +571,11 @@ class AreaNPtg(ClassifiedPtg):
         self.last_col_rel = last_col_rel
 
     def stringify(self, tokens, workbook):
-        r1 = ('R[{}]' if self.first_row_rel else 'R{}').format(self.first_row + 1)
-        c1 = ('C[{}]' if self.first_col_rel else 'C{}').format(self.first_col + 1)
-        r2 = ('R[{}]' if self.last_row_rel else 'R{}').format(self.last_row + 1)
-        c2 = ('C[{}]' if self.last_col_rel else 'C{}').format(self.last_col + 1)
-        return r1 + c1 + ':' + r2 + c2
+        first = self.cell_address(self.first_col, self.first_row, self.first_col_rel
+                                  , self.first_row_rel)
+        last = self.cell_address(self.last_col, self.last_row, self.last_col_rel
+                                 , self.last_row_rel)
+        return first + ':' + last
 
     @classmethod
     def read(cls, reader, ptg):
@@ -587,7 +587,7 @@ class AreaNPtg(ClassifiedPtg):
         r2_rel = c2 & 0x8000 == 0x8000
         c1_rel = c1 & 0x4000 == 0x4000
         c2_rel = c2 & 0x4000 == 0x4000
-        return cls(r1, r2, c1 & 0x3FFF, c2 & 0x3FFF, r1_rel, r2_rel, c1_rel, c2_rel, ptg)
+        return cls(r1, r2, c1 & 0x3FFF, c2 & 0x3FFF, not r1_rel, not r2_rel, not c1_rel, not c2_rel, ptg)
 
 
 class NameXPtg(ClassifiedPtg):
@@ -621,9 +621,8 @@ class Ref3dPtg(ClassifiedPtg):
         self.col_rel = col_rel
 
     def stringify(self, tokens, workbook):
-        r = ('R[{}]' if self.row_rel else 'R{}').format(self.row + 1)
-        c = ('C[{}]' if self.col_rel else 'C{}').format(self.col + 1)
-        return workbook.sheets[self.sheet_idx] + '!' + r + c
+        cell_add = self.cell_address(self.col, self.row, self.col_rel, self.row_rel)
+        return workbook.sheets[self.sheet_idx] + '!' +cell_add
 
     @classmethod
     def read(cls, reader, ptg):
@@ -632,7 +631,7 @@ class Ref3dPtg(ClassifiedPtg):
         col = reader.read_short()
         row_rel = col & 0x8000 == 0x8000
         col_rel = col & 0x4000 == 0x4000
-        return cls(sheet_idx, row, col & 0x3FFF, row_rel, col_rel, ptg)
+        return cls(sheet_idx, row, col & 0x3FFF, not row_rel, not col_rel, ptg)
 
 
 class Area3dPtg(ClassifiedPtg):
@@ -652,11 +651,11 @@ class Area3dPtg(ClassifiedPtg):
         self.last_col_rel = last_col_rel
 
     def stringify(self, tokens, workbook):
-        r1 = ('R[{}]' if self.first_row_rel else 'R{}').format(self.first_row + 1)
-        c1 = ('C[{}]' if self.first_col_rel else 'C{}').format(self.first_col + 1)
-        r2 = ('R[{}]' if self.last_row_rel else 'R{}').format(self.last_row + 1)
-        c2 = ('C[{}]' if self.last_col_rel else 'C{}').format(self.last_col + 1)
-        return workbook.sheets[self.sheet_idx] + '!' + r1 + c1 + ':' + r2 + c2
+        first = self.cell_address(self.first_col, self.first_row, self.first_col_rel
+                                  ,self.first_row_rel)
+        last = self.cell_address(self.last_col, self.last_row, self.last_col_rel
+                                  ,self.last_row_rel)
+        return workbook.sheets[self.sheet_idx] + '!' + first + ':' + last
 
     @classmethod
     def read(cls, reader, ptg):
@@ -669,7 +668,7 @@ class Area3dPtg(ClassifiedPtg):
         r2_rel = c2 & 0x8000 == 0x8000
         c1_rel = c1 & 0x4000 == 0x4000
         c2_rel = c2 & 0x4000 == 0x4000
-        return cls(sheet_idx, r1, r2, c1 & 0x3FFF, c2 & 0x3FFF, r1_rel, r2_rel, c1_rel, c2_rel, ptg)
+        return cls(sheet_idx, r1, r2, c1 & 0x3FFF, c2 & 0x3FFF, not r1_rel, not r2_rel, not c1_rel, not c2_rel, ptg)
 
 
 class RefErr3dPtg(ClassifiedPtg):
@@ -911,6 +910,7 @@ class FuncVarPtg(ClassifiedPtg):
         argc = reader.read_byte()
         idx = reader.read_short()
         return cls(idx, argc & 0x7F, argc & 0x80 == 0x80, idx & 0x8000 == 0x8000, ptg)
+
 function_names = {
     # https://docs.microsoft.com/en-us/openspecs/office_file_formats/ms-xls/00b5dd7d-51ca-4938-b7b7-483fe0e5933b
     0x0000: ('COUNT',),
