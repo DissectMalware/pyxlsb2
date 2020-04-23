@@ -416,8 +416,8 @@ class RefPtg(ClassifiedPtg):
     def read(cls, reader, ptg):
         row = reader.read_int()
         col = reader.read_short()
-        row_rel = col & 0x8000 == 0x8000
-        col_rel = col & 0x4000 == 0x4000
+        row_rel = col & 0x8000 != 0x8000
+        col_rel = col & 0x4000 != 0x4000
         return cls(row, col & 0x3FFF, row_rel, col_rel, ptg)
 
 
@@ -1286,6 +1286,7 @@ function_names = {
     0x0179: ('ROUNDBAHTUP',),
     0x017A: ('THAIYEAR',),
     0x017B: ('RTD',),
+    0x01E0: ('IFERROR', 2),
 
     # https://docs.microsoft.com/en-us/openspecs/office_file_formats/ms-xls/0b8acba5-86d2-4854-836e-0afaee743d44
     0x8000: ('BEEP',),

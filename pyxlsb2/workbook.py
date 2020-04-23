@@ -111,7 +111,7 @@ class Workbook(object):
             rels_fp = None
         return Worksheet(self, self.sheets[idx], fp, rels_fp)
 
-    def get_sheet_by_name(self, name, with_rels=True):
+    def get_sheet_by_name(self, name, with_rels=False):
         """Get a boundsheet by its name.
 
         Args:
