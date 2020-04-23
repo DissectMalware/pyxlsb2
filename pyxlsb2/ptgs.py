@@ -622,7 +622,19 @@ class Ref3dPtg(ClassifiedPtg):
 
     def stringify(self, tokens, workbook):
         cell_add = self.cell_address(self.col, self.row, self.col_rel, self.row_rel)
-        return workbook.sheets[self.sheet_idx] + '!' +cell_add
+
+        name = None
+        for sheet in workbook.sheets:
+            if sheet.sheetId == self.sheet_idx:
+                name = sheet.name
+
+        res = "#ref!"
+        if name is not None:
+            res = name + '!' + cell_add
+
+        # return workbook.sheets[self.sheet_idx] + '!' +cell_add
+
+        return res
 
     @classmethod
     def read(cls, reader, ptg):
@@ -655,7 +667,17 @@ class Area3dPtg(ClassifiedPtg):
                                   ,self.first_row_rel)
         last = self.cell_address(self.last_col, self.last_row, self.last_col_rel
                                   ,self.last_row_rel)
-        return workbook.sheets[self.sheet_idx] + '!' + first + ':' + last
+        name = None
+        for sheet in workbook.sheets:
+            if sheet.sheetId == self.sheet_idx:
+                name = sheet.name
+
+        res = "#ref!"
+        if name is not None:
+            res = name + '!' + first + ':' + last
+
+        # return workbook.sheets[self.sheet_idx] + '!' + first + ':' + last
+        return res
 
     @classmethod
     def read(cls, reader, ptg):
