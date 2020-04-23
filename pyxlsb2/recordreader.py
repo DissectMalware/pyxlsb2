@@ -114,7 +114,7 @@ class RecordReader(object):
             if not b:
                 return None
             value = (value & 0x7F) | ((ord(b) & 0x7F) << 7)
-        print(rt._by_num[value])
+        # print(rt._by_num[value])
         return value
 
     def _read_len(self):
