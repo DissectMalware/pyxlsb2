@@ -39,17 +39,28 @@ class Workbook(object):
         self.sheets = list()
         self.stringtable = None
         self.styles = None
+        self.external_sheet_ids = None
+        self.externals = None
 
         workbook_rels = self._pkg.get_workbook_rels()
         with self._pkg.get_workbook_part() as f:
+            counter = 0
             for rectype, rec in RecordReader(f):
                 if rectype == rt.WB_PROP:
                     self.props = rec
                 elif rectype == rt.BUNDLE_SH:
                     rec.type, rec.loc = self.get_sheet_info(workbook_rels, rec.rId)
+                    rec.id = counter
+                    counter +=1
                     self.sheets.append(rec)
-                elif rectype == rt.END_BUNDLE_SHS:
-                    break
+                elif rectype == rt.BEGIN_EXTERNALS:
+                    # https://docs.microsoft.com/en-us/openspecs/office_file_formats/ms-xlsb/e1620ef9-0809-478f-8c96-6a587bec09a4
+                    self.externals = {'SupportingLinks':[], 'ExternalSheets': []}
+                elif rectype == rt.EXTERN_SHEET:
+                    self.externals['ExternalSheets'] = rec
+                elif rectype == rt.SUP_SELF or rectype == rt.SUP_SAME:
+                    self.externals['SupportingLinks'].append(rec)
+                    # break
 
         ssfp = self._pkg.get_sharedstrings_part()
         if ssfp is not None:
@@ -81,6 +92,14 @@ class Workbook(object):
                 break
 
         return sheet_type, sheet_path
+
+    def resolve_extern_sheet_id(self, extern_sheet_id):
+        external_sheets = self.externals['ExternalSheets']
+        supporting_links = self.externals['SupportingLinks']
+
+        supporting_link_idx, first_sheet_idx, last_sheet_idx = external_sheets.external_sheets[extern_sheet_id]
+        supporting_link = supporting_links[supporting_link_idx]
+        return supporting_link, first_sheet_idx, last_sheet_idx
 
     def get_workbook_rels(self):
         if not self._workbook_rels:

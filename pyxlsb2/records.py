@@ -68,6 +68,7 @@ class SheetRecord(BaseRecord):
         self.name = name
         self.type = None
         self.loc = None
+        self.id = 0
 
     @classmethod
     def read(cls, reader, rectype, reclen):
@@ -431,3 +432,25 @@ class CellStyleRecord(BaseRecord):
         reader.skip(8)  # TODO
         name = reader.read_string()
         return cls(name)
+
+
+class ExternSheetRecord(BaseRecord):
+    brt = rt.EXTERN_SHEET
+
+    def __init__(self, external_sheets):
+        self.external_sheets = external_sheets
+
+    @classmethod
+    def read(cls, reader, rectype, reclen):
+        # 2.4.658 BrtExternSheet
+        # https://docs.microsoft.com/en-us/openspecs/office_file_formats/ms-xlsb/bd8dddfb-90da-423e-b5cd-c692aa86a97a
+        count = reader.read_int()
+        external_sheets = []
+        for i in range(count):
+            supporting_like = reader.read_int()
+            first_sheet_id = reader.read_int()
+            last_sheet_id = reader.read_int()
+            external_sheets.append((supporting_like, first_sheet_id, last_sheet_id))
+
+        return cls(external_sheets)
+

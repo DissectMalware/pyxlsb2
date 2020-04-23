@@ -80,7 +80,11 @@ class RecordReader(object):
         rt.END_STYLES:           recs.SimpleRecord('CellStylesEnd'),
         rt.STYLE:                recs.CellStyleRecord,
         rt.BEGIN_CELL_STYLE_XFS: recs.CellStyleXfsRecord,
-        rt.END_CELL_STYLE_XFS:   recs.SimpleRecord('CellStyleXfsEnd')
+        rt.END_CELL_STYLE_XFS:   recs.SimpleRecord('CellStyleXfsEnd'),
+        rt.BEGIN_EXTERNALS:      recs.SimpleRecord('ExternalBegin'),
+        rt.EXTERN_SHEET:         recs.ExternSheetRecord,
+        rt.SUP_SELF:             recs.SimpleRecord('SupSelf'),
+        rt.SUP_SAME:             recs.SimpleRecord('SupSame')
     }
 
     def __init__(self, fp, enc=None):
@@ -98,6 +102,7 @@ class RecordReader(object):
     def __next__(self):
         return self.next()
 
+    # https://docs.microsoft.com/en-us/openspecs/office_file_formats/ms-xlsb/30e2eaae-0b1e-4e8e-a465-e1ce5575868d
     def _read_type(self):
         value = self._fp.read(1)
         if not value:
@@ -108,6 +113,7 @@ class RecordReader(object):
             if not b:
                 return None
             value = (value & 0x7F) | ((ord(b) & 0x7F) << 7)
+        # print(rt._by_num[value])
         return value
 
     def _read_len(self):

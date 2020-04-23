@@ -1,5 +1,6 @@
 import sys
 from enum import Enum
+from . import recordtypes as rt
 
 if sys.version_info > (3,):
     xrange = range
@@ -612,9 +613,9 @@ class NameXPtg(ClassifiedPtg):
 class Ref3dPtg(ClassifiedPtg):
     ptg = 0x3A
 
-    def __init__(self, sheet_idx, row, col, row_rel, col_rel, *args, **kwargs):
+    def __init__(self, extern_sheet_id, row, col, row_rel, col_rel, *args, **kwargs):
         super(Ref3dPtg, self).__init__(*args, **kwargs)
-        self.sheet_idx = sheet_idx
+        self.extern_sheet_idx = extern_sheet_id
         self.row = row
         self.col = col
         self.row_rel = row_rel
@@ -623,27 +624,23 @@ class Ref3dPtg(ClassifiedPtg):
     def stringify(self, tokens, workbook):
         cell_add = self.cell_address(self.col, self.row, self.col_rel, self.row_rel)
 
-        name = None
-        for sheet in workbook.sheets:
-            if sheet.sheetId == self.sheet_idx:
-                name = sheet.name
+        supporting_link, first_sheet_idx, last_sheet_idx = workbook.resolve_extern_sheet_id(self.extern_sheet_idx)
 
-        res = "#ref!"
-        if name is not None:
-            res = name + '!' + cell_add
+        address = "NotImplemented"
+        if supporting_link.brt == rt.SUP_SAME or supporting_link.brt == rt.SUP_SELF:
+            if first_sheet_idx == last_sheet_idx:
+                address = workbook.sheets[first_sheet_idx].name + '!' + cell_add
 
-        # return workbook.sheets[self.sheet_idx] + '!' +cell_add
-
-        return res
+        return address
 
     @classmethod
     def read(cls, reader, ptg):
-        sheet_idx = reader.read_short()
+        sheet_extern_idx = reader.read_short()
         row = reader.read_int()
         col = reader.read_short()
         row_rel = col & 0x8000 == 0x8000
         col_rel = col & 0x4000 == 0x4000
-        return cls(sheet_idx, row, col & 0x3FFF, not row_rel, not col_rel, ptg)
+        return cls(sheet_extern_idx, row, col & 0x3FFF, not row_rel, not col_rel, ptg)
 
 
 class Area3dPtg(ClassifiedPtg):
@@ -667,21 +664,18 @@ class Area3dPtg(ClassifiedPtg):
                                   ,self.first_row_rel)
         last = self.cell_address(self.last_col, self.last_row, self.last_col_rel
                                   ,self.last_row_rel)
-        name = None
-        for sheet in workbook.sheets:
-            if sheet.sheetId == self.sheet_idx:
-                name = sheet.name
+        supporting_link, first_sheet_idx, last_sheet_idx = workbook.resolve_extern_sheet_id(self.extern_sheet_idx)
 
-        res = "#ref!"
-        if name is not None:
-            res = name + '!' + first + ':' + last
+        address = "NotImplemented"
+        if supporting_link.brt == rt.SUP_SAME or supporting_link.brt == rt.SUP_SELF:
+            if first_sheet_idx == last_sheet_idx:
+                address = workbook.sheets[first_sheet_idx].name + '!' + first + ':' + last
 
-        # return workbook.sheets[self.sheet_idx] + '!' + first + ':' + last
-        return res
+        return address
 
     @classmethod
     def read(cls, reader, ptg):
-        sheet_idx = reader.read_short()
+        XtiIndex = reader.read_short()
         r1 = reader.read_int()
         r2 = reader.read_int()
         c1 = reader.read_short()
@@ -690,7 +684,7 @@ class Area3dPtg(ClassifiedPtg):
         r2_rel = c2 & 0x8000 == 0x8000
         c1_rel = c1 & 0x4000 == 0x4000
         c2_rel = c2 & 0x4000 == 0x4000
-        return cls(sheet_idx, r1, r2, c1 & 0x3FFF, c2 & 0x3FFF, not r1_rel, not r2_rel, not c1_rel, not c2_rel, ptg)
+        return cls(XtiIndex, r1, r2, c1 & 0x3FFF, c2 & 0x3FFF, not r1_rel, not r2_rel, not c1_rel, not c2_rel, ptg)
 
 
 class RefErr3dPtg(ClassifiedPtg):
