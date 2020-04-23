@@ -6,7 +6,7 @@ pyxlsb2
 ``pyxslb2`` offers the following improvements/changes in comparison to pyxlsb:
 
 1. By default, keeps all data in memory instead of creating temporary files. This is mainly to speed up the processing and also not changing the local filesystem during the processing.
-2. relies on both "xl\workbook.bin" and "xl\_rels\workbook.bin.rels" to load locate boundsheets. As a result, it can load all worksheets as well as all macrosheets.
+2. relies on both "xl\\workbook.bin" and "xl\\_rels\\workbook.bin.rels" to load locate boundsheets. As a result, it can load all worksheets as well as all macrosheets.
 3. extracts macro formulas:
  * accurately shows the formulas
  * supports A1 addressing
