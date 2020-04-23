@@ -12,8 +12,8 @@ import pyxlsb2
 # -- Project information -----------------------------------------------------
 
 project = 'pyxlsb2'
-copyright = '2015-{}, William Turner'.format(datetime.now().year)
-author = 'William Turner'
+copyright = '2020, DissectMalware'.format(datetime.now().year)
+author = 'DissectMalware'
 
 release = pyxlsb2.__version__
 
