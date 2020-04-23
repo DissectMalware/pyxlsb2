@@ -84,7 +84,8 @@ class RecordReader(object):
         rt.BEGIN_EXTERNALS:      recs.SimpleRecord('ExternalBegin'),
         rt.EXTERN_SHEET:         recs.ExternSheetRecord,
         rt.SUP_SELF:             recs.SimpleRecord('SupSelf'),
-        rt.SUP_SAME:             recs.SimpleRecord('SupSame')
+        rt.SUP_SAME:             recs.SimpleRecord('SupSame'),
+        rt.NAME:                 recs.Name
     }
 
     def __init__(self, fp, enc=None):
@@ -113,7 +114,7 @@ class RecordReader(object):
             if not b:
                 return None
             value = (value & 0x7F) | ((ord(b) & 0x7F) << 7)
-        # print(rt._by_num[value])
+        print(rt._by_num[value])
         return value
 
     def _read_len(self):

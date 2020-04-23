@@ -1,7 +1,6 @@
 from enum import Enum
 from . import recordtypes as rt
 
-
 class BaseRecord(object):
     def __repr__(self):
         args = ('{}={}'.format(str(k), repr(v)) for k, v in self.__dict__.items())
@@ -454,3 +453,22 @@ class ExternSheetRecord(BaseRecord):
 
         return cls(external_sheets)
 
+class Name(BaseRecord):
+    brt = rt.EXTERN_SHEET
+
+    def __init__(self, name, formula_raw):
+        self.name = name
+        self.formula_raw = formula_raw
+        self.formula = None
+
+    @classmethod
+    def read(cls, reader, rectype, reclen):
+        # 2.4.658 BrtExternSheet
+        # https://docs.microsoft.com/en-us/openspecs/office_file_formats/ms-xlsb/bd8dddfb-90da-423e-b5cd-c692aa86a97a
+        flags = reader.read_int()
+        chKey = reader.read_byte()
+        itab = reader.read_int()
+        name = reader.read_string()
+        sz = reader.read_int()
+        formula_raw = reader.read(sz)
+        return cls(name, formula_raw)

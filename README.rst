@@ -1,7 +1,7 @@
 pyxlsb2
 ======
 
-``pyxlsb2`` (a variant of pyxlsb) is an Excel 2007-2010 Binary Workbook (xlsb) parser for Python.
+``pyxlsb2`` (a variant of pyxlsb) is an Excel 2007+ Binary Workbook (xlsb) parser for Python.
 
 ``pyxslb2`` offers the following improvements/changes in comparison to pyxlsb:
 
@@ -19,17 +19,17 @@ Install
 1. Installing the whl file
 
  Download \.whl file from release section
- 
+
      pip install -U [path to whl file]
-    
-2. Installing the latest development 
+
+2. Installing the latest development
 
  Download the latest version
- 
+
      wget https://github.com/DissectMalware/pyxlsb2/archive/master.zip
 
  Extract the zip file and go to the extracted directory
- 
+
      python setup.py install --user
 
 
@@ -104,7 +104,7 @@ Converting a workbook to CSV:
                    for row in sheet.rows():
                        writer.writerow([c.v for c in row])
 
-Limitations 
+Limitations
 -----------
 
 Non exhaustive list of things that are currently not supported:

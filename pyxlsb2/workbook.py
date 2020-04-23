@@ -8,6 +8,7 @@ from .recordreader import RecordReader
 from .stringtable import StringTable
 from .styles import Styles
 from .worksheet import Worksheet
+from .formula import Formula
 
 if sys.version_info > (3,):
     basestring = (str, bytes)
@@ -41,6 +42,7 @@ class Workbook(object):
         self.styles = None
         self.external_sheet_ids = None
         self.externals = None
+        self.defined_names = {}
 
         workbook_rels = self._pkg.get_workbook_rels()
         with self._pkg.get_workbook_part() as f:
@@ -60,6 +62,9 @@ class Workbook(object):
                     self.externals['ExternalSheets'] = rec
                 elif rectype == rt.SUP_SELF or rectype == rt.SUP_SAME:
                     self.externals['SupportingLinks'].append(rec)
+                elif rectype == rt.NAME:
+                    self.defined_names[rec.name] = rec
+                    rec.formula = Formula.parse(rec.formula_raw).stringify(self)
                     # break
 
         ssfp = self._pkg.get_sharedstrings_part()
