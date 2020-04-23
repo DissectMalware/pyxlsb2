@@ -5,12 +5,12 @@ pyxlsb2
 
 ``pyxslb2`` offers the following improvements/changes in comparison to pyxlsb:
 
-1. keeps all data in memory instead of creating temporary files to speedup the parsing
+1. By default, keeps all data in memory instead of creating temporary files. This is mainly to speed up the processing and also not changing the local filesystem during the processing.
 2. relies on both "xl\workbook.bin" and "xl\_rels\workbook.bin.rels" to load locate boundsheets. As a result, it can load all worksheets as well as all macrosheets.
-3. extracts macro formulas 
- 1. accurately shows the formulas
- 2. supports A1 addressing
- 3. supports external addressing (partially implemented))
+3. extracts macro formulas:
+ * accurately shows the formulas
+ * supports A1 addressing
+ * supports external addressing (partially implemented))
 
 
 Usage
@@ -76,7 +76,7 @@ Converting a workbook to CSV:
 .. code:: python
 
    import csv
-   from pyxlsb import open_workbook
+   from pyxlsb2 import open_workbook
 
    with open_workbook('Book1.xlsb') as wb:
        for name in wb.sheets:
