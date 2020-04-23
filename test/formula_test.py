@@ -1,7 +1,7 @@
 import unittest
 from mock import Mock
-from pyxlsb.formula import Formula
-from pyxlsb.ptgs import *
+from pyxlsb2.formula import Formula
+from pyxlsb2.ptgs import *
 
 class FormulaTestCase(unittest.TestCase):
     def setUp(self):

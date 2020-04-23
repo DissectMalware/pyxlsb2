@@ -1,6 +1,6 @@
 import unittest
 import os.path
-from pyxlsb.styles import Styles
+from pyxlsb2.styles import Styles
 
 class StylesTestCase(unittest.TestCase):
     def setUp(self):

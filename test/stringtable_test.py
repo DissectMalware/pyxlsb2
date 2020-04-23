@@ -1,6 +1,6 @@
 import os.path
 from unittest import TestCase
-from pyxlsb.stringtable import StringTable
+from pyxlsb2.stringtable import StringTable
 
 
 class StringTableTestCase(TestCase):

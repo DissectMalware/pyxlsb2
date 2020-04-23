@@ -1,5 +1,5 @@
 import unittest
-from pyxlsb.cellreference import CellReference
+from pyxlsb2.cellreference import CellReference
 
 class CellReferenceTestCase(unittest.TestCase):
     def test_col_to_index(self):

@@ -1,7 +1,7 @@
 import os.path
 import unittest
 from mock import Mock
-from pyxlsb.worksheet import Worksheet
+from pyxlsb2.worksheet import Worksheet
 
 class WorksheetTestCase(unittest.TestCase):
     def setUp(self):

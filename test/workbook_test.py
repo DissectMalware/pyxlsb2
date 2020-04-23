@@ -1,8 +1,8 @@
 import os.path
 import unittest
 from datetime import datetime, time
-from pyxlsb.workbook import Workbook
-from pyxlsb.xlsbpackage import XlsbPackage
+from pyxlsb2.workbook import Workbook
+from pyxlsb2.xlsbpackage import XlsbPackage
 
 
 class WorkbookTestCase(unittest.TestCase):

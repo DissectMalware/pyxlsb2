@@ -6,16 +6,16 @@ from datetime import datetime
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-import pyxlsb
+import pyxlsb2
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'pyxlsb'
+project = 'pyxlsb2'
 copyright = '2015-{}, William Turner'.format(datetime.now().year)
 author = 'William Turner'
 
-release = pyxlsb.__version__
+release = pyxlsb2.__version__
 
 
 # -- General configuration ---------------------------------------------------

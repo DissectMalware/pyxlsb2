@@ -1,5 +1,5 @@
 import unittest
-from pyxlsb.recordreader import RecordReader
+from pyxlsb2.recordreader import RecordReader
 
 
 class RecordReaderTestCase(unittest.TestCase):

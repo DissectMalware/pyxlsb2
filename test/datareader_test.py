@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import unittest
-from pyxlsb.datareader import DataReader
+from pyxlsb2.datareader import DataReader
 
 
 class DataReaderTestCase(unittest.TestCase):

@@ -1,4 +1,4 @@
-Welcome to pyxlsb
+Welcome to pyxlsb2
 =================
 
 API Reference

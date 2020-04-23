@@ -1,6 +1,6 @@
 import os.path
 import unittest
-from pyxlsb import open_workbook
+from pyxlsb2 import open_workbook
 
 
 class DatesTestCase(unittest.TestCase):

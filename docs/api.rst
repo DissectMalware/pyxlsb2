@@ -4,13 +4,13 @@ API reference
 Top-level functions
 -------------------
 
-.. automodule:: pyxlsb
+.. automodule:: pyxlsb2
    :members:
 
 Workbook
 --------
 
-.. currentmodule:: pyxlsb.workbook
+.. currentmodule:: pyxlsb2.workbook
 
 .. autoclass:: Workbook
    :members:
@@ -19,7 +19,7 @@ Workbook
 Worksheet
 ---------
 
-.. currentmodule:: pyxlsb.worksheet
+.. currentmodule:: pyxlsb2.worksheet
 
 .. autoclass:: Worksheet
    :members:
@@ -28,7 +28,7 @@ Worksheet
 Row
 ---
 
-.. currentmodule:: pyxlsb.row
+.. currentmodule:: pyxlsb2.row
 
 .. autoclass:: Row
    :members:
@@ -37,7 +37,7 @@ Row
 Cell
 ----
 
-.. currentmodule:: pyxlsb.cell
+.. currentmodule:: pyxlsb2.cell
 
 .. autoclass:: Cell
    :members:
