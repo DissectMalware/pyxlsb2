@@ -13,10 +13,28 @@ pyxlsb2
  * supports external addressing (partially implemented))
 
 
-Usage
+Install
 -----
 
-Also see the `API reference`_.
+1. Installing the whl file
+
+ Download \.whl file from release section
+ 
+     pip install -U [path to whl file]
+    
+2. Installing the latest development 
+
+ Download the latest version
+ 
+     wget https://github.com/DissectMalware/pyxlsb2/archive/master.zip
+
+ Extract the zip file and go to the extracted directory
+ 
+     python setup.py install --user
+
+
+Usage
+-----
 
 The module exposes an ``open_workbook(name)`` method (similar to Xlrd and
 OpenPyXl) for opening XLSB files. The Workbook object representing the file is
