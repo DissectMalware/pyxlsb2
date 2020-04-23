@@ -628,7 +628,7 @@ class Ref3dPtg(ClassifiedPtg):
 
         address = "NotImplemented"
         if supporting_link.brt == rt.SUP_SAME or supporting_link.brt == rt.SUP_SELF:
-            if first_sheet_idx == last_sheet_idx:
+            if first_sheet_idx == last_sheet_idx and first_sheet_idx >= 0:
                 address = workbook.sheets[first_sheet_idx].name + '!' + cell_add
 
         return address
@@ -646,10 +646,10 @@ class Ref3dPtg(ClassifiedPtg):
 class Area3dPtg(ClassifiedPtg):
     ptg = 0x3B
 
-    def __init__(self, sheet_idx, first_row, last_row, first_col, last_col, first_row_rel, last_row_rel, first_col_rel,
+    def __init__(self, extern_sheet_idx, first_row, last_row, first_col, last_col, first_row_rel, last_row_rel, first_col_rel,
                  last_col_rel, *args, **kwargs):
         super(Area3dPtg, self).__init__(*args, **kwargs)
-        self.sheet_idx = sheet_idx
+        self.extern_sheet_idx = extern_sheet_idx
         self.first_row = first_row
         self.last_row = last_row
         self.first_col = first_col
@@ -668,7 +668,7 @@ class Area3dPtg(ClassifiedPtg):
 
         address = "NotImplemented"
         if supporting_link.brt == rt.SUP_SAME or supporting_link.brt == rt.SUP_SELF:
-            if first_sheet_idx == last_sheet_idx:
+            if first_sheet_idx == last_sheet_idx and first_sheet_idx >= 0:
                 address = workbook.sheets[first_sheet_idx].name + '!' + first + ':' + last
 
         return address

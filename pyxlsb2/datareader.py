@@ -46,6 +46,12 @@ class DataReader(object):
             return None
         return _uint32_t.unpack(buf)[0]
 
+    def read_signed_int(self):
+        buf = self.read(4)
+        if len(buf) < 4:
+            return None
+        return _int32_t.unpack(buf)[0]
+
     def read_float(self):
         buf = self.read(4)
         if len(buf) < 4:

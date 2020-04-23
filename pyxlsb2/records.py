@@ -447,9 +447,9 @@ class ExternSheetRecord(BaseRecord):
         count = reader.read_int()
         external_sheets = []
         for i in range(count):
-            supporting_like = reader.read_int()
-            first_sheet_id = reader.read_int()
-            last_sheet_id = reader.read_int()
+            supporting_like = reader.read_signed_int()
+            first_sheet_id = reader.read_signed_int()
+            last_sheet_id = reader.read_signed_int()
             external_sheets.append((supporting_like, first_sheet_id, last_sheet_id))
 
         return cls(external_sheets)
