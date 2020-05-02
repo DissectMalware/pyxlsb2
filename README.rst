@@ -1,7 +1,7 @@
 pyxlsb2
 ======
 
-``pyxlsb2`` (a variant of pyxlsb - https://github.com/wwwiiilll/pyxlsb) is an Excel 2007+ Binary Workbook (xlsb) parser for Python.
+``pyxlsb2`` (a variant of pyxlsb - https://github.com/wwwiiilll/pyxlsb) is an Excel 2007+ Binary Workbook (xlsb) parser written in Python.
 
 ``pyxslb2`` offers the following improvements/changes in comparison to pyxlsb:
 
