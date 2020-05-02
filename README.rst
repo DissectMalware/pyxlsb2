@@ -19,13 +19,17 @@ Install
 
 1. Installing the whl file
 
- Download \.whl file from release section
+ Download \.whl file from the release section
 
      pip install -U [path to whl file]
 
 2. Installing the latest development
+ 
+ Using pip
+ 
+     pip install -U https://github.com/DissectMalware/pyxlsb2/archive/master.zip
 
- Download the latest version
+ Or download the latest version
 
      wget https://github.com/DissectMalware/pyxlsb2/archive/master.zip
 
