@@ -15,17 +15,17 @@ setup(
     description='Excel 2007+ Binary Workbook (xlsb) parser',
     long_description=README,
 
-    author='DissectMalware',
-    author_email='amir@inquest.net',
+    author='Amirreza Niakanlahiji',
+    author_email='aniak2@uis.edu',
 
     url='https://github.com/DissectMalware/pyxlsb2',
 
-    license='MIT',
+    license='Apache License 2.0',
 
     classifiers=[
         'Development Status :: 5 - Production/Stable',
 
-        'License :: OSI Approved :: MIT License',
+        'License :: OSI Approved :: Apache License 2.0',
 
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
