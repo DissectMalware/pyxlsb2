@@ -392,7 +392,9 @@ class NamePtg(ClassifiedPtg):
         self.idx = idx
         self._reserved = reserved
 
-    # FIXME: We need to read names to stringify this
+    def stringify(self, tokens, workbook):
+        defined = workbook.defined_names[workbook.list_names[self.idx - 1]]
+        return '%s (%s)' % (defined.name, defined.formula)
 
     @classmethod
     def read(cls, reader, ptg):
@@ -622,6 +624,10 @@ class Ref3dPtg(ClassifiedPtg):
         self.col_rel = col_rel
 
     def stringify(self, tokens, workbook):
+        if (not self.col_rel) and (self.col & 0x2000 == 0x2000):
+            self.col -= 16384
+        if (not self.row_rel) and (self.row & 0x80000 == 0x80000):
+            self.row -= 1048576
         cell_add = self.cell_address(self.col, self.row, self.col_rel, self.row_rel)
 
         supporting_link, first_sheet_idx, last_sheet_idx = workbook.resolve_extern_sheet_id(self.extern_sheet_idx)
@@ -630,6 +636,8 @@ class Ref3dPtg(ClassifiedPtg):
         if supporting_link.brt == rt.SUP_SAME or supporting_link.brt == rt.SUP_SELF:
             if first_sheet_idx == last_sheet_idx and first_sheet_idx >= 0:
                 address = workbook.sheets[first_sheet_idx].name + '!' + cell_add
+            elif first_sheet_idx == last_sheet_idx and first_sheet_idx == -2:
+                address = cell_add
 
         if address is None:
             raise NotImplementedError('External address not supported')
@@ -644,6 +652,11 @@ class Ref3dPtg(ClassifiedPtg):
         row_rel = col & 0x8000 == 0x8000
         col_rel = col & 0x4000 == 0x4000
         return cls(sheet_extern_idx, row, col & 0x3FFF, not row_rel, not col_rel, ptg)
+
+    def cell_address(self, col, row, col_rel, row_rel):
+        col_name = '$' + ClassifiedPtg.convert_to_column_name(col + 1) if col_rel else '@%s' % str(col)
+        row_name = '$' + str(row + 1) if row_rel else '@%s' % str(row)
+        return '[' + col_name + ', ' + row_name + ']'
 
 
 class Area3dPtg(ClassifiedPtg):
@@ -922,7 +935,7 @@ class FuncVarPtg(ClassifiedPtg):
     def stringify(self, tokens, workbook):
         args = list()
         for i in xrange(self.argc):
-            arg = tokens.pop().stringify(tokens, workbook)
+            arg = tokens.pop().stringify(tokens, workbook).strip()
             args.append(arg)
 
         return '{}({})'.format(function_names[self.idx][0], ', '.join(reversed(args)))
