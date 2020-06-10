@@ -43,6 +43,7 @@ class Workbook(object):
         self.external_sheet_ids = None
         self.externals = None
         self.defined_names = {}
+        self.list_names = []
 
         workbook_rels = self._pkg.get_workbook_rels()
         with self._pkg.get_workbook_part() as f:
@@ -63,6 +64,7 @@ class Workbook(object):
                 elif rectype == rt.SUP_SELF or rectype == rt.SUP_SAME:
                     self.externals['SupportingLinks'].append(rec)
                 elif rectype == rt.NAME:
+                    self.list_names.append(rec.name)
                     self.defined_names[rec.name] = rec
                     rec.formula = Formula.parse(rec.formula_raw).stringify(self)
                     # break
