@@ -394,7 +394,8 @@ class NamePtg(ClassifiedPtg):
 
     def stringify(self, tokens, workbook):
         defined = workbook.defined_names[workbook.list_names[self.idx - 1]]
-        return '%s (%s)' % (defined.name, defined.formula)
+        # return '%s (%s)' % (defined.name, defined.formula)
+        return defined.formula
 
     @classmethod
     def read(cls, reader, ptg):
@@ -654,9 +655,16 @@ class Ref3dPtg(ClassifiedPtg):
         return cls(sheet_extern_idx, row, col & 0x3FFF, not row_rel, not col_rel, ptg)
 
     def cell_address(self, col, row, col_rel, row_rel):
-        col_name = '$' + ClassifiedPtg.convert_to_column_name(col + 1) if col_rel else '@%s' % str(col)
-        row_name = '$' + str(row + 1) if row_rel else '@%s' % str(row)
-        return '[' + col_name + ', ' + row_name + ']'
+        if not (col_rel and row_rel):
+            col_name = 'C[%s]' % str(col)
+            row_name = 'R[%s]' % str(row)
+            res = row_name + col_name
+        else:
+            col_name = '$' + self.convert_to_column_name(col + 1)
+            row_name = '$' + str(row + 1)
+            res = col_name + row_name
+
+        return res
 
 
 class Area3dPtg(ClassifiedPtg):
