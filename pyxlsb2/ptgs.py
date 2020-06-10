@@ -656,8 +656,8 @@ class Ref3dPtg(ClassifiedPtg):
 
     def cell_address(self, col, row, col_rel, row_rel):
         if not (col_rel and row_rel):
-            col_name = 'C[%s]' % str(col)
-            row_name = 'R[%s]' % str(row)
+            col_name = 'C' + str(col + 1) if col_rel else 'C[%s]' % str(col)
+            row_name = 'R' + str(row + 1) if row_rel else 'R[%s]' % str(row)
             res = row_name + col_name
         else:
             col_name = '$' + self.convert_to_column_name(col + 1)
