@@ -16,12 +16,13 @@ with open_workbook(sys.argv[1]) as wb:
             for row in sheet:
                 for cell in row:
                     formula_str = Formula.parse(cell.formula)
-                    if formula_str._tokens:
+                    if formula_str.tokens:
                         try:
-                            print(formula_str.stringify(wb))
+                            pass
+                            print(formula_str.stringify(wb, cell.row_num, cell.col))
                         except NotImplementedError as exp:
                             print('ERROR({}) {}'.format(exp, str(cell)))
-                        except Exception:
-                            print('ERROR ' + str(cell))
+                        except Exception as e:
+                            print('ERROR ' + str(cell)) + ' (%s)' % e
         d = time.time() - a
         print('Done! ({} seconds)'.format(d))

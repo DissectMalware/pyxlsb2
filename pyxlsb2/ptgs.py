@@ -1,3 +1,4 @@
+import re
 import sys
 from enum import Enum
 from . import recordtypes as rt
@@ -24,9 +25,6 @@ class BasePtg(object):
     def write(self, writer):
         # TODO Eventually, some day
         pass
-
-
-
 
 
 class ClassifiedPtg(BasePtg):
@@ -392,10 +390,18 @@ class NamePtg(ClassifiedPtg):
         self.idx = idx
         self._reserved = reserved
 
-    def stringify(self, tokens, workbook):
+    def stringify(self, tokens, workbook, row=None, col=None):
         defined = workbook.defined_names[workbook.list_names[self.idx - 1]]
         # return '%s (%s)' % (defined.name, defined.formula)
-        return defined.formula
+        formula = defined.formula
+        if row is not None and col is not None:
+            for link in re.findall(r'R\[?-?\d+\]?C\[?-?\d+\]?[,)\s]', formula):
+                address = re.match(r'R\[?-?\d+\]?C\[?-?\d+\]?', link).group()
+                p = address[1:].split('C')
+                r = int(p[0][1:-1]) + row + 1 if p[0].startswith('[') else row + 1
+                c = ClassifiedPtg.convert_to_column_name(int(p[1][1:-1]) + col + 1 if p[1].startswith('[') else col + 1)
+                formula = formula.replace(link, link.replace(address, '%s%s' % (c, r)))
+        return formula
 
     @classmethod
     def read(cls, reader, ptg):
