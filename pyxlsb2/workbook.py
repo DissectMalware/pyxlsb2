@@ -28,7 +28,6 @@ class Workbook(object):
         self._pkg = pkg
         self._parse()
 
-
     def __enter__(self):
         return self
 
