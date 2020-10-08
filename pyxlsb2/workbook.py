@@ -179,7 +179,7 @@ class Workbook(object):
         Returns:
             str: The string at the index in table table or None if not found.
         """
-        if self.stringtable is not None:
+        if self.stringtable is not None and idx:
             return self.stringtable.get_string(idx)
 
     def convert_date(self, value):
