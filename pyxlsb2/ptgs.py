@@ -941,12 +941,18 @@ class FuncVarPtg(ClassifiedPtg):
         self.ce = ce
 
     def stringify(self, tokens, workbook):
+        if self.idx == 255:  # UserDefinedFunction
+            function_name = tokens.pop().stringify(tokens, workbook).strip()
+            self.argc -= 1
+        else:
+            function_name = function_names[self.idx][0]
+
         args = list()
         for i in xrange(self.argc):
             arg = tokens.pop().stringify(tokens, workbook).strip()
             args.append(arg)
 
-        return '{}({})'.format(function_names[self.idx][0], ', '.join(reversed(args)))
+        return '{}({})'.format(function_name, ', '.join(reversed(args)))
 
     @classmethod
     def read(cls, reader, ptg):
