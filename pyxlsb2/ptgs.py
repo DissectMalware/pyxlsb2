@@ -395,7 +395,7 @@ class NamePtg(ClassifiedPtg):
     def stringify(self, tokens, workbook):
         defined = workbook.defined_names[workbook.list_names[self.idx - 1]]
         # return '%s (%s)' % (defined.name, defined.formula)
-        return defined.formula
+        return defined.formula if defined.formula else defined.name
 
     @classmethod
     def read(cls, reader, ptg):
