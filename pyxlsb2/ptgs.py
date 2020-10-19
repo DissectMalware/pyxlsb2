@@ -942,7 +942,8 @@ class FuncVarPtg(ClassifiedPtg):
 
     def stringify(self, tokens, workbook):
         if self.idx == 255:  # UserDefinedFunction
-            function_name = tokens.pop().stringify(tokens, workbook).strip()
+            function_name = tokens[-1*self.argc].stringify(tokens, workbook).strip()
+            del tokens[-1*self.argc]
             self.argc -= 1
         else:
             function_name = function_names[self.idx][0]
