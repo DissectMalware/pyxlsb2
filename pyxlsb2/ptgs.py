@@ -395,7 +395,7 @@ class NamePtg(ClassifiedPtg):
     def stringify(self, tokens, workbook):
         defined = workbook.defined_names[workbook.list_names[self.idx - 1]]
         # return '%s (%s)' % (defined.name, defined.formula)
-        return defined.formula
+        return defined.formula if defined.formula else defined.name
 
     @classmethod
     def read(cls, reader, ptg):
@@ -941,12 +941,19 @@ class FuncVarPtg(ClassifiedPtg):
         self.ce = ce
 
     def stringify(self, tokens, workbook):
+        if self.idx == 255:  # UserDefinedFunction
+            function_name = tokens[-1*self.argc].stringify(tokens, workbook).strip()
+            del tokens[-1*self.argc]
+            self.argc -= 1
+        else:
+            function_name = function_names[self.idx][0]
+
         args = list()
         for i in xrange(self.argc):
             arg = tokens.pop().stringify(tokens, workbook).strip()
             args.append(arg)
 
-        return '{}({})'.format(function_names[self.idx][0], ', '.join(reversed(args)))
+        return '{}({})'.format(function_name, ', '.join(reversed(args)))
 
     @classmethod
     def read(cls, reader, ptg):
