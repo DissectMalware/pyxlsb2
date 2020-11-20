@@ -111,6 +111,8 @@ class Workbook(object):
     def get_workbook_rels(self):
         if not self._workbook_rels:
             workbook = self.get_xml_file('xl/_rels/workbook.xml.rels')
+            if not workbook:
+                workbook = self.get_xml_file("'xl/_rels/workbook.xml.rels'")
             self._workbook_rels = workbook
         return self._workbook_rels
 
@@ -158,16 +160,23 @@ class Workbook(object):
                 loc = sheet.loc
                 target_sheet = sheet
                 break
-
+        
         sheet_fname = loc[loc.rfind('/')+1:]
+        if not sheet_fname:
+            sheet_fname = loc[loc.rfind('\\')+1:]
         sheet_dir = loc[:loc.rfind('/')]
+        if not sheet_dir:
+            sheet_dir = loc[:loc.rfind('\\')]
         fp = self._pkg.get_file('xl/'+loc)
+        if not fp:
+            fp = self._pkg.get_file('xl\\'+loc.replace('\x2f','\x5c'))
 
         if with_rels:
             rels_fp = self._pkg.get_file('xl/{}/_rels/{}.rels'.format(sheet_dir, sheet_fname))
+            if not rels_fp:
+                 rels_fp = self._pkg.get_file('xl/{}/_rels/{}.rels'.format(sheet_dir, sheet_fname).replace('\x2f','\x5c'))
         else:
             rels_fp = None
-
         return Worksheet(self, target_sheet, fp, rels_fp)
 
     def get_shared_string(self, idx):
