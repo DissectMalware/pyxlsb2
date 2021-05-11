@@ -61,7 +61,7 @@ class Workbook(object):
                     self.externals = {'SupportingLinks':[], 'ExternalSheets': []}
                 elif rectype == rt.EXTERN_SHEET:
                     self.externals['ExternalSheets'] = rec
-                elif rectype == rt.SUP_SELF or rectype == rt.SUP_SAME:
+                elif rectype in {rt.SUP_SELF, rt.SUP_SAME, rt.SUP_ADDIN, rt.SUP_BOOK_SRC}:
                     self.externals['SupportingLinks'].append(rec)
                 elif rectype == rt.NAME:
                     self.list_names.append(rec.name)
