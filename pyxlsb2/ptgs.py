@@ -634,7 +634,7 @@ class Ref3dPtg(ClassifiedPtg):
         supporting_link, first_sheet_idx, last_sheet_idx = workbook.resolve_extern_sheet_id(self.extern_sheet_idx)
 
         address = None
-        if supporting_link.brt == rt.SUP_SAME or supporting_link.brt == rt.SUP_SELF:
+        if supporting_link.brt in rt._SUP_LINK_TYPES:
             if first_sheet_idx == last_sheet_idx and first_sheet_idx >= 0:
                 address = workbook.sheets[first_sheet_idx].name + '!' + cell_add
             elif first_sheet_idx == last_sheet_idx and first_sheet_idx == -2:
@@ -691,7 +691,7 @@ class Area3dPtg(ClassifiedPtg):
         supporting_link, first_sheet_idx, last_sheet_idx = workbook.resolve_extern_sheet_id(self.extern_sheet_idx)
 
         address = None
-        if supporting_link.brt == rt.SUP_SAME or supporting_link.brt == rt.SUP_SELF:
+        if supporting_link.brt in rt._SUP_LINK_TYPES:
             if first_sheet_idx == last_sheet_idx and first_sheet_idx >= 0:
                 address = workbook.sheets[first_sheet_idx].name + '!' + first + ':' + last
 

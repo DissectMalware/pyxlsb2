@@ -779,3 +779,5 @@ REVISION_PTR = 3073
 
 _by_name = {k: v for k, v in locals().items() if not k.startswith('_')}
 _by_num = {v: k for k, v in _by_name.items()}
+# https://docs.microsoft.com/en-us/openspecs/office_file_formats/ms-xlsb/8cc503eb-12ab-4a47-bbc7-2dbcef47150b
+_SUP_LINK_TYPES = {SUP_SELF, SUP_SAME, SUP_ADDIN, SUP_BOOK_SRC}
