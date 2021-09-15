@@ -655,14 +655,20 @@ class Ref3dPtg(ClassifiedPtg):
         return cls(sheet_extern_idx, row, col & 0x3FFF, not row_rel, not col_rel, ptg)
 
     def cell_address(self, col, row, col_rel, row_rel):
-        if not (col_rel and row_rel):
-            col_name = 'C' + str(col + 1) if col_rel else 'C[%s]' % str(col)
-            row_name = 'R' + str(row + 1) if row_rel else 'R[%s]' % str(row)
-            res = row_name + col_name
-        else:
-            col_name = '$' + self.convert_to_column_name(col + 1)
-            row_name = '$' + str(row + 1)
-            res = col_name + row_name
+        # External reference, address is already computed
+        # if not (col_rel and row_rel):
+        #     col_name = 'C' + str(col + 1) if col_rel else 'C[%s]' % str(col)
+        #     row_name = 'R' + str(row + 1) if row_rel else 'R[%s]' % str(row)
+        #     res = row_name + col_name
+        # else:
+        #     col_name = '$' + self.convert_to_column_name(col + 1)
+        #     row_name = '$' + str(row + 1)
+        #     res = col_name + row_name
+
+        col_name = '$' + self.convert_to_column_name(col + 1) if col_rel else self.convert_to_column_name(col + 1)
+        row_name = '$' + str(row + 1) if row_rel else str(row + 1)
+        res = col_name + row_name
+
 
         return res
 
