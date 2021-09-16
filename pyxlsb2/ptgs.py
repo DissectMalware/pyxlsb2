@@ -633,7 +633,7 @@ class Ref3dPtg(ClassifiedPtg):
 
         supporting_link, first_sheet_idx, last_sheet_idx = workbook.resolve_extern_sheet_id(self.extern_sheet_idx)
         address = None
-        if supporting_link.brt == rt.SUP_SAME or supporting_link.brt == rt.SUP_SELF:
+        if supporting_link.brt in rt._SUP_LINK_TYPES:
             if first_sheet_idx == last_sheet_idx and first_sheet_idx >= 0:
                 address = workbook.sheets[first_sheet_idx].name + '!' + cell_add
             elif first_sheet_idx == last_sheet_idx and first_sheet_idx == -1:
@@ -698,13 +698,16 @@ class Area3dPtg(ClassifiedPtg):
                                   ,self.last_row_rel)
         supporting_link, first_sheet_idx, last_sheet_idx = workbook.resolve_extern_sheet_id(self.extern_sheet_idx)
 
+        cell_add_first = self.cell_address(self.first_col, self.first_row, self.first_col_rel, self.first_row_rel)
+        cell_add_last = self.cell_address(self.last_col, self.last_row, self.last_col_rel, self.last_row_rel)
+
         address = None
-        if supporting_link.brt == rt.SUP_SAME or supporting_link.brt == rt.SUP_SELF:
+        if supporting_link.brt in rt._SUP_LINK_TYPES:
             if first_sheet_idx == last_sheet_idx and first_sheet_idx >= 0:
                 address = workbook.sheets[first_sheet_idx].name + '!' + first + ':' + last
 
         if address is None:
-            print("AreaPtg External Address Not Supported {0} {1} {2}".format(cell_add, first_sheet_idx, last_sheet_idx))
+            print("AreaPtg External Address Not Supported {0}:{1} {2} {3}".format(cell_add_first, cell_add_last, first_sheet_idx, last_sheet_idx))
             #raise NotImplementedError('External address not supported')
 
         return address
