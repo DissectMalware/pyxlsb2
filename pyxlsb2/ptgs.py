@@ -632,16 +632,18 @@ class Ref3dPtg(ClassifiedPtg):
         cell_add = self.cell_address(self.col, self.row, self.col_rel, self.row_rel)
 
         supporting_link, first_sheet_idx, last_sheet_idx = workbook.resolve_extern_sheet_id(self.extern_sheet_idx)
-
         address = None
         if supporting_link.brt == rt.SUP_SAME or supporting_link.brt == rt.SUP_SELF:
             if first_sheet_idx == last_sheet_idx and first_sheet_idx >= 0:
                 address = workbook.sheets[first_sheet_idx].name + '!' + cell_add
+            elif first_sheet_idx == last_sheet_idx and first_sheet_idx == -1:
+                address = workbook.sheets[last_sheet_idx].name + '!' + cell_add                
             elif first_sheet_idx == last_sheet_idx and first_sheet_idx == -2:
                 address = cell_add
-
+           
         if address is None:
-            raise NotImplementedError('External address not supported')
+            print("Ref3dPtg External Address Not Supported {0} {1} {2}".format(cell_add, first_sheet_idx, last_sheet_idx))
+        #    raise NotImplementedError('External address not supported')
 
         return address
 
@@ -702,7 +704,8 @@ class Area3dPtg(ClassifiedPtg):
                 address = workbook.sheets[first_sheet_idx].name + '!' + first + ':' + last
 
         if address is None:
-            raise NotImplementedError('External address not supported')
+            print("AreaPtg External Address Not Supported {0} {1} {2}".format(cell_add, first_sheet_idx, last_sheet_idx))
+            #raise NotImplementedError('External address not supported')
 
         return address
 

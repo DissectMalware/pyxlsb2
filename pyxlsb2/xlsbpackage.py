@@ -62,19 +62,32 @@ class ZipPackage(object):
 class XlsbPackage(ZipPackage):
 
     def get_workbook_part(self):
-        return self.get_file('xl/workbook.bin')
-
+        ret = self.get_file('xl/workbook.bin')
+        if not ret:
+          ret = self.get_file('xl\\workbook.bin')
+        return ret
     def get_workbook_rels(self):
-        return self.get_xml_file('xl/_rels/workbook.bin.rels')
-
+        ret = self.get_xml_file('xl/_rels/workbook.bin.rels')
+        if not ret:
+            ret = self.get_xml_file('xl\\_rels\\workbook.bin.rels')
+        return ret
     def get_sharedstrings_part(self):
-        return self.get_file('xl/sharedStrings.bin')
-
+        ret = self.get_file('xl/sharedStrings.bin')
+        if not ret:
+            ret = self.get_file('xl\\sharedStrings.bin')
+        return ret
     def get_styles_part(self):
-        return self.get_file('xl/styles.bin')
-
+        ret = self.get_file('xl/styles.bin')
+        if not ret:
+            ret = self.get_file('xl\\styles.bin')
+        return ret
     def get_worksheet_part(self, idx):
-        return self.get_file('xl/worksheets/sheet{}.bin'.format(idx))
-
+        ret = self.get_file('xl/worksheets/sheet{}.bin'.format(idx))
+        if not ret:
+            ret = self.get_file('xl\\worksheets\\sheet{}.bin'.format(idx))
+        return ret
     def get_worksheet_rels(self, idx):
-        return self.get_file('xl/worksheets/_rels/sheet{}.bin.rels'.format(idx))
+        ret = self.get_file('xl/worksheets/_rels/sheet{}.bin.rels'.format(idx))
+        if not ret:
+            ret = self.get_file('xl\\worksheets\\_rels\\sheet{}.bin.rels'.format(idx))
+        return ret
