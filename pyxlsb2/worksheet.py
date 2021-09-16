@@ -86,7 +86,6 @@ class Worksheet(object):
                 if rec.v is not None and rec.c is not None:
                     row._add_cell(rec.c, rec.v, rec.f, rec.style)
 
-
             elif rectype >= rt.CELL_BLANK and rectype <= rt.FMLA_ERROR:
                 if rec.v is not None and rec.c is not None:
                     row._add_cell(rec.c, rec.v, rec.f, rec.style)
