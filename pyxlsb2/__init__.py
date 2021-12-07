@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from .workbook import Workbook
 from .xlsbpackage import XlsbPackage
 
-__version__ = '0.0.6'
+__version__ = '0.0.7'
 
 
 def open_workbook(name, *args, **kwargs):
