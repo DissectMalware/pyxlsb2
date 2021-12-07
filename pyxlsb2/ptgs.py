@@ -395,7 +395,7 @@ class NamePtg(ClassifiedPtg):
     def stringify(self, tokens, workbook):
         defined = workbook.defined_names[workbook.list_names[self.idx - 1]]
         # return '%s (%s)' % (defined.name, defined.formula)
-        return defined.formula if defined.formula else defined.name
+        return defined.formula if (defined.formula and '#NAME?' != defined.formula) else defined.name
 
     @classmethod
     def read(cls, reader, ptg):
@@ -637,10 +637,10 @@ class Ref3dPtg(ClassifiedPtg):
             if first_sheet_idx == last_sheet_idx and first_sheet_idx >= 0:
                 address = workbook.sheets[first_sheet_idx].name + '!' + cell_add
             elif first_sheet_idx == last_sheet_idx and first_sheet_idx == -1:
-                address = workbook.sheets[last_sheet_idx].name + '!' + cell_add                
+                address = workbook.sheets[last_sheet_idx].name + '!' + cell_add
             elif first_sheet_idx == last_sheet_idx and first_sheet_idx == -2:
                 address = cell_add
-           
+
         if address is None:
             print("Ref3dPtg External Address Not Supported {0} {1} {2}".format(cell_add, first_sheet_idx, last_sheet_idx))
         #    raise NotImplementedError('External address not supported')
