@@ -84,7 +84,11 @@ class Worksheet(object):
                 row = Row(self, row_num)
             elif rectype == rt.CELL_ISST:
                 if rec.v is not None and rec.c is not None:
-                    row._add_cell(rec.c, rec.v, rec.f, rec.style)
+                    if 0 <= rec.v < len(self.workbook.stringtable._strings):
+                        value = self.workbook.get_shared_string(rec.v)
+                    else:
+                        value = rec.v
+                    row._add_cell(rec.c, value, rec.f, rec.style)
 
             elif rectype >= rt.CELL_BLANK and rectype <= rt.FMLA_ERROR:
                 if rec.v is not None and rec.c is not None:
