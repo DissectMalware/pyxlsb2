@@ -85,7 +85,7 @@ class Worksheet(object):
             elif rectype == rt.CELL_ISST:
                 if rec.v is not None and rec.c is not None:
                     if 0 <= rec.v < len(self.workbook.stringtable._strings):
-                        value = self.workbook.get_shared_string(rec.v)
+                        value = self.workbook.stringtable._strings[rec.v]
                     else:
                         value = rec.v
                     row._add_cell(rec.c, value, rec.f, rec.style)
